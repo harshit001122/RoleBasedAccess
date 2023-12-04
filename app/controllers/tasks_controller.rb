@@ -1,5 +1,5 @@
 class TasksController < ApplicationController
-  before_action :set_current_user, only: [:new, :create]
+  before_action :set_current_user, only: [:new, :create, :show]
 
 
 
@@ -9,24 +9,36 @@ class TasksController < ApplicationController
   end
 
   def create
-
-    @task = @current_user.tasks.build(task_params)
-
-    @role = @task.assign_to
-    puts "role = #{@role}"
-    puts "task = #{@task}"
-
-    if @task.save
-      redirect_to @task, notice: 'Task was successfully created.'
-    else
-      render :new
+    if @current_user.usertype == "employee"
+      flash[:warning] = "You are not an authorised person to create a task."
+      redirect_to newTask_path
+    elsif
+      @task = @current_user.tasks.build(task_params)
+      puts "created by = #{@createdBy}"
+      @role = @task.assign_to
+    end
+    if @current_user.usertype == "admin" || @current_user.usertype == "manager"
+      if @task.save
+        redirect_to tasks_path, notice: 'Task was successfully created.'
+      else
+        render :new
+      end
     end
   end
 
   def show
+    @current_user
+    puts "current user = #{@current_user}"
     @tasks = Task.all
   end
 
+  def review
+    @task = Task.find_by(id: params[:task_id])
+
+  end
+
+  def reviewTask
+  end
 
 
   private
