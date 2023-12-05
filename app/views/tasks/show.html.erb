@@ -33,7 +33,11 @@
           <% if session[:user_token].present? %>
             <%= link_to 'View Task', tasks_path(task.id), class: 'btn btn-primary', id: "viewTaskButton_#{task.id}" %>
             <% if @current_user.usertype == "employee"%>
+              <% if task.assign_to == ""%>
+                <b class="float-end bg-warning">Can't mark as review</b>
+              <% else %>
                 <%= link_to 'Review Task', review_path(task_id: task.id), class: 'btn btn-info float-end' %>
+              <%end%>
             <% end %>
           <% else %>
             <p class="text-warning">Login to view this task.</p>

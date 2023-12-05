@@ -1,11 +1,37 @@
-<h1>Review Task</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task List</title>
+    <%= javascript_include_tag 'tasks' %>
+</head>
+<body>
 
-<%= link_to 'Back to Task List', tasks_path, class: 'btn btn-primary' %>
+<%= link_to 'Back to Task List', tasks_path, class: 'btn btn-primary float-end' %>
 
-<div>
-  <h2>Task Details</h2>
-  <p><strong>Task ID:</strong> <%= @task.id %></p>
-  <p><strong>Title:</strong> <%= @task.title %></p>
-  <p><strong>Description:</strong> <%= @task.description %></p>
+<div class="row">
+  <% @reviews.each do |review| %>
+    <div class="col-md-4">
+      <% 
+        storedColor = review.status == 'Pending' ? 'lightcoral' : (review.status == 'Mark as Done' ? 'lightgreen' : 'yellow')
+        storedColor = localStorage.getItem("taskColor_#{review.id}") || storedColor
+      %>
+      <div class="task-card" style="background-color: <%= storedColor %>; padding: 10px; margin: 10px;" id="<%= review.id %>">
+        <h2>Task Details</h2>
+        <p><strong>Task ID:</strong> <%= review.id %></p>
+        <p><strong>Title:</strong> <%= review.title %></p>
+        <p><strong>Description:</strong> <%= review.description %></p>
+        <p><strong>Assign TO:</strong> <%= review.assign_to %></p>
 
+        <% if @current_user.usertype == "manager" || @current_user.usertype == "admin"%>
+          <%= link_to 'Pending', 'javascript:void(0);', class: 'btn btn-danger', onclick: "changeColor('#{review.id}', 'lightcoral', 'Pending')" %>
+          <%= link_to 'Mark as Done', 'javascript:void(0);', class: 'btn btn-success float-end', onclick: "changeColor('#{review.id}', 'lightgreen', 'Mark as Done')" %>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
 </div>
+
+</body>
+</html>

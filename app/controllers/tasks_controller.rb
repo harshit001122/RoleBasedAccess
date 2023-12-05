@@ -1,5 +1,5 @@
 class TasksController < ApplicationController
-  before_action :set_current_user, only: [:new, :create, :show]
+  before_action :set_current_user, only: [:new, :create, :show, :review]
 
 
 
@@ -33,13 +33,31 @@ class TasksController < ApplicationController
   end
 
   def review
+    @current_user
+    puts "current user in review def = #{@current_user}"
     @task = Task.find_by(id: params[:task_id])
+    @reviews = ReviewTask.all
+    puts "task = #{@task}"
+    if @current_user.usertype == "employee"
+      @reviewTask = ReviewTask.new(@task.attributes)
+      @reviewTask.save
+    end
 
   end
 
   def reviewTask
+    puts "current user in reviewTask def = #{@current_user}"
+
+    @reviewTask = ReviewTask.new(@task.attributes)
+    @reviewTask.save
   end
 
+
+  def update
+    @review_task = ReviewTask.find_by(task_id: params[:task_id])
+    
+
+  end
 
   private
 
