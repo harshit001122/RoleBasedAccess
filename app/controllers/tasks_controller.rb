@@ -32,32 +32,58 @@ class TasksController < ApplicationController
     @tasks = Task.all
   end
 
+
   def review
     @current_user
     puts "current user in review def = #{@current_user}"
-    @task = Task.find_by(id: params[:task_id])
-    @reviews = ReviewTask.all
-    puts "task = #{@task}"
     if @current_user.usertype == "employee"
-      @reviewTask = ReviewTask.new(@task.attributes)
-      @reviewTask.save
+      @task = Task.find_by(id: params[:task_id])
+    else
+      @task = Task.find_by(params[:id])
+    end
+    @reviews = ReviewTask.all
+    puts "task = #{@task.id}"
+    if @current_user.present?
+      if @current_user.usertype == "employee"
+        @reviewTask = ReviewTask.new(@task.attributes)
+        @reviewTask.save
+      end
+    else
+      redirect_to review_path
     end
 
   end
 
   def reviewTask
     puts "current user in reviewTask def = #{@current_user}"
-
-    @reviewTask = ReviewTask.new(@task.attributes)
-    @reviewTask.save
+    if @current_user.usertype == "manager" || @current_user.usertype == "admin"
+      @reviewTask = ReviewTask.new(@task.attributes)
+      @reviewTask.save
+    end
   end
 
 
   def update
-    @review_task = ReviewTask.find_by(task_id: params[:task_id])
-    
-
+    @task = ReviewTask.find(params[:task_id])
+    puts "task id = #{@task.id}"
+    puts "Params: #{params.inspect}"
+    review_status = params[:status]
+    if review_status == 'done'
+      @task.color = 'lightgreen'
+      @task.status = 'done'
+    elsif review_status == 'pending'
+      @task.color = 'lightcoral'
+      @task.status = 'pending'
+    else
+      @task.color = 'yellow'
+      @task.status = 'active'
+    end
+    @task.save
+    redirect_to review_path
   end
+
+
+
 
   private
 

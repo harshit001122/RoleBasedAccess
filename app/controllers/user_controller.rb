@@ -23,11 +23,16 @@ class UserController < ApplicationController
         render :new
       end
     else
+      puts "inside employee"
       @employee = Employee.new(user_params)
+      puts "employee = #{@employee}"
       if @employee.save
+        puts "after save"
         redirect_to login_path
       else
-        render :new
+        puts "Validation errors: #{@employee.errors.full_messages}"
+        flash[:alert] = @employee.errors.full_messages
+        return
       end
     end
   end
