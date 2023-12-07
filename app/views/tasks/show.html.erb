@@ -1,4 +1,16 @@
+<!DOCTYPE html>
+<html>
+  <head>
 
+    <style>
+      .nav-item{
+        margin-top: -18px;
+      }
+    </style>
+  </head>
+
+  <body>
+    
 <% if flash.any? %>
   <% flash.each do |type, msg| %>
     <div class="alert alert-<%= type %> text-center">
@@ -8,11 +20,23 @@
 <% end %>
 
 <% if @current_user.usertype == "employee" %>
+  <%= link_to 'Task status', status_path, class: 'btn btn-warning mt-3 ' %>
 <% else %>
   <%= link_to 'Pending Reviews', review_path, class: 'btn btn-warning mt-3 ' %>
     <%= link_to '+ Create Task', newTask_path, class: 'btn btn-dark mt-3 float-end' %>
 <% end %>
 
+              <li class="nav-item dropdown float-end">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <img src="/assets/profile2.png" style="width: 30px; height: 30px; border-radius: 50%;">
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="/userDetail">Profile</a>
+                    <a class="dropdown-item" href="#">Settings</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="logout">Logout</a>
+                </div>
+              </li>
 <h1 style="text-align:center">All Tasks</h1></br>
 
 <div class="row">
@@ -48,3 +72,8 @@
     </div>
   <% end %>
 </div>
+
+  </body>
+</html>
+
+

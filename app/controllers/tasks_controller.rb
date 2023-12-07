@@ -1,5 +1,5 @@
 class TasksController < ApplicationController
-  before_action :set_current_user, only: [:new, :create, :show, :review]
+  before_action :set_current_user, only: [:new, :create, :show, :review, :taskStatus]
 
 
 
@@ -14,7 +14,6 @@ class TasksController < ApplicationController
       redirect_to newTask_path
     elsif
       @task = @current_user.tasks.build(task_params)
-      puts "created by = #{@createdBy}"
       @role = @task.assign_to
     end
     if @current_user.usertype == "admin" || @current_user.usertype == "manager"
@@ -28,21 +27,18 @@ class TasksController < ApplicationController
 
   def show
     @current_user
-    puts "current user = #{@current_user}"
     @tasks = Task.all
   end
 
 
   def review
     @current_user
-    puts "current user in review def = #{@current_user}"
     if @current_user.usertype == "employee"
       @task = Task.find_by(id: params[:task_id])
     else
       @task = Task.find_by(params[:id])
     end
     @reviews = ReviewTask.all
-    puts "task = #{@task.id}"
     if @current_user.present?
       if @current_user.usertype == "employee"
         @reviewTask = ReviewTask.new(@task.attributes)
@@ -55,7 +51,6 @@ class TasksController < ApplicationController
   end
 
   def reviewTask
-    puts "current user in reviewTask def = #{@current_user}"
     if @current_user.usertype == "manager" || @current_user.usertype == "admin"
       @reviewTask = ReviewTask.new(@task.attributes)
       @reviewTask.save
@@ -65,8 +60,6 @@ class TasksController < ApplicationController
 
   def update
     @task = ReviewTask.find(params[:task_id])
-    puts "task id = #{@task.id}"
-    puts "Params: #{params.inspect}"
     review_status = params[:status]
     if review_status == 'done'
       @task.color = 'lightgreen'
@@ -82,6 +75,15 @@ class TasksController < ApplicationController
     redirect_to review_path
   end
 
+  def taskStatus
+    @current_user
+    if @current_user.usertype == "employee"
+      @task = Task.find_by(id: params[:task_id])
+    else
+      @task = Task.find_by(params[:id])
+    end
+    @reviews = ReviewTask.all
+  end
 
 
 
@@ -93,19 +95,14 @@ class TasksController < ApplicationController
 
   def set_current_user
     token = session[:user_token]
-    puts "Session token: #{token.inspect}"
 
     if token.present?
       user_info = JsonWebToken.decode(token)
-      puts "Decoded user info: #{user_info.inspect}"
 
       user_id = user_info[:email]
       if user_id.present?
-        puts "user email = #{user_id}"
         @current_user = Admin.find_by(email: user_id) || Manager.find_by(email: user_id) || Employee.find_by(email: user_id)
-        puts "Found user: #{@current_user.inspect}"
       else
-        puts "user id inside else = #{user_id}"
         @current_user = nil
       end
     else

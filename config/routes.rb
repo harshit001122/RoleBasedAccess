@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
 
+  get '/', to: 'index#home'
+
   get '/user', to: 'user#new'
 
   post '/user', to: 'user#create'
@@ -22,6 +24,13 @@ Rails.application.routes.draw do
   patch '/update/review/:task_id', to: 'tasks#update', as: 'update_review'
   get 'update/review/:task_id', to: 'tasks#update'
 
+
+  get 'status', to: 'tasks#taskStatus'
+
+  get 'userDetail', to: 'user_detail#userDetails'
+
+  get 'logout', to: 'login#logout'
+  post 'logout', to: 'login#logout'
 
   get "up" => "rails/health#show", as: :rails_health_check
 
