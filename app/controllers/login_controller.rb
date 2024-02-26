@@ -27,6 +27,11 @@ class LoginController < ApplicationController
 
   end
 
+  def logout
+    session.delete(:user_token)
+    redirect_to login_path
+  end
+
   private
 
   def current_user
