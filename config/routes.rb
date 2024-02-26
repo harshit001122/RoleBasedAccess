@@ -13,7 +13,11 @@ Rails.application.routes.draw do
 
   post 'tasks', to: 'tasks#create'
 
-  get "up" => "rails/health#show", as: :rails_health_check
+  get 'tasks', to: 'tasks#show'
 
+  get '/review', to: 'tasks#review'
+  post 'review', to: 'tasks#review'
+
+  get "up" => "rails/health#show", as: :rails_health_check
 
 end

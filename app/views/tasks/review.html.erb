@@ -1,0 +1,11 @@
+<h1>Review Task</h1>
+
+<%= link_to 'Back to Task List', tasks_path, class: 'btn btn-primary' %>
+
+<div>
+  <h2>Task Details</h2>
+  <p><strong>Task ID:</strong> <%= @task.id %></p>
+  <p><strong>Title:</strong> <%= @task.title %></p>
+  <p><strong>Description:</strong> <%= @task.description %></p>
+
+</div>
